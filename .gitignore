@@ -31,3 +31,13 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+.Rproj.user
+
+# js libs
+assets/libs/*
+
+# Rendered files
+presentation.html
+presentation.md
+index.html
+assets/plots/*

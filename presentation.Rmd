@@ -1,0 +1,1362 @@
+---
+title: "Prüfungstutorium QM I (WS 17/18)"
+author: "mit Tobi & Lukas"
+date: "`r format(Sys.time(), 'erstellt am %F um %H:%M Uhr')`"
+output:
+  revealjs::revealjs_presentation:
+    mathjax: local
+    keep_md: true
+    css: "assets/styles.css"
+    theme: simple
+    highlight: pygments
+    incremental: false
+    transition: slide
+    widescreen: yes
+    background_transition: slide
+    self_contained: false
+    fig_height: 7
+    fig_retina: 2
+    fig_width: 12
+    lib_dir: "assets/libs"
+    reveal_plugins: ["notes", "chalkboard"]
+    reveal_options:
+      slideNumber: true
+      progress: true
+      history: true
+      center: true
+      chalkboard:
+        theme: whiteboard
+        toggleNotesButton: true
+  html_document:
+    fig_caption: yes
+    fig_width: 9
+    number_sections: no
+    self_contained: no
+    lib_dir: "assets"
+    toc: yes
+    toc_float: true
+    code_folding: show
+    include:
+      after_body: "assets/_footer.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.path = "assets/plots/", fig.align = "center", 
+                      fig.retina = 2, echo = F, warning = F, message = F)
+library(MASS)
+library(ppcor)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(tadaatoolbox)
+library(magrittr)
+library(car)
+library(htmlTable)
+library(tidyr)
+
+# NGO & FKV Datensatz einlesen
+fkv   <- haven::read_sav("data/fkv.sav")
+zombo <- readRDS("data/zombo.rds")
+
+# 3 digits are enough
+options(digits = 3)
+
+# selfmade ggplot-Theme laden und global setzen
+theme_set(theme_tadaa(base_size = 16))
+```
+
+# Na, auch hier?
+
+## Für die letzte Reihe
+
+<div class = "fragment">
+### Slides
+
+<span class = "big">[link.jemu.name/qmpW17](https://link.jemu.name/qmpW17)</span>
+</div><div class = "fragment">
+### Alles auf einmal
+
+<span class = "big">[link.jemu.name/qmpW17w](https://link.jemu.name/qmpW17w)</span>
+</div><div class = "fragment">
+### Ordner
+
+<span class = "big">[public.tadaa-data.de/QM](https://public.tadaa-data.de/QM)</span>
+
+## Agenda
+
+>1. Aufgaben besprechen <small>Pflichtprogramm</small>
+>2. Fragen klären <small>Standard</small>
+>3. Angrenzende Theorie besprechen <small>Bonus</small>
+
+## Erfahrungsgemäß reicht die Zeit …  
+
+<div class = "fragment">… **entweder** für alle **Aufgaben**…</div>
+<div class = "fragment">… **oder** für alle **Fragen** </div>
+<br />
+<div class="fragment">Choose wisely.</div>
+
+## {data-background="img/excited_MSS0COPq80x68.gif" data-background-size="60%"}
+
+
+# Aufgabe 1 <br><br> Faktorenanalyse
+
+##
+
+Im Rahmen einer Hauptkomponentenanalyse wurde die folgende Komponenten-Matrix ermittelt:
+
+![](assets/plots/ladungen.png)
+
+```{r A01_data, echo = F}
+a01 <- data.frame(
+      Merkmal = paste0("A", 1:15),
+           K1 = c(-.724, -.294, .665, .639, -.599, .388, .643, -.544,
+                  -.274, .571, -.230, .737, .789, .672, .630),
+           K2 = c(.351, .642, .310, .2, .622, .39, .398, .429, .407, .334, 
+                  .177, 0, .256, -.024, .134),
+           K3 = c(.036, -.01, -.311, .053, .001, -.530, -.003, .349, .266,
+                  -.323, .412, .389, .104, .520, .366)
+      ) 
+```
+
+## Beantworten Sie folgende Fragen
+
+a) Was bedeuten die drei Werte innerhalb der zweiten Zeile?
+b) Wie groß ist die Kommunalität des durch „A10“ gekennzeichneten Merkmals?
+c) Welchen Wert besitzt der drittgrößte Eigenwert?
+d) Wie viel Prozent der Gesamtvarianz aller 15 in die Faktorenanalyse einbezogenen (standardisierten) Merkmale wird durch den 3. Faktor erklärt?
+e) Warum enthält die Komponenten-Matrix vermutlich nur drei Spalten?
+f) Auf welche Faktoren laden die durch „A1“ bis „A15“ gekennzeichneten Merkmale jeweils am höchsten?
+g) Gibt es bei den - im Rahmen der Suche nach einer Einfachstruktur - innerhalb von „6)“ vorgenommenen Zuordnungen an irgendeiner Stelle ein Problem, sodass es sinnvoll erscheinen könnte, eine Rotation durchzuführen?
+
+##
+
+Was bedeuten die drei Werte innerhalb der zweiten Zeile?
+
+```{r A01_a}
+cols <- with(a01, ifelse(Merkmal == "A2", '#58FF4F', 'white'))
+
+htmlTable(as.matrix(a01[c(1:5),]), col.rgroup = cols)
+```
+
+##
+
+Wie groß ist die Kommunalität des durch „A10“ gekennzeichneten Merkmals?
+
+```{r A01_b}
+htmlTable(as.matrix(a01[c(9:12),]), col.rgroup = cols)
+```
+
+<p class="fragment">$$0.571^2 +  0.334^2 - 0.323^2 \approx 0.333$$</p>
+
+
+## 
+
+Welchen Wert besitzt der drittgrößte Eigenwert?
+
+<div id="left">
+$$
+\text{Eigenwert} = \sum_{a = 1}^m x_{a}^2
+$$
+</div>
+
+<div class="fragment" id="right">
+   K1     |    K2     |    K3 
+----------|-----------|-----------
+`r sum(a01$K1^2)` | `r sum(a01$K2^2)` | `r sum(a01$K3^2)`
+</div>
+
+![](assets/plots/ladungen.png)
+
+
+##
+
+Wie viel Prozent der Gesamtvarianz aller 15 in die Faktorenanalyse einbezogenen (standardisierten) Merkmale wird durch den 3. Faktor erklärt?
+
+<p class="fragment">
+$$
+\frac{\text{Eigenwert}}{\text{Anzahl Items}} \cdot 100 = 
+\frac{`r sum(a01$K3^2)`}{`r length(a01$K3)`} \cdot 100 =
+`r sum(a01$K3^2) / length(a01$K3) * 100`\%
+$$
+</p>
+
+## 
+
+Warum enthält die Komponenten-Matrix vermutlich nur drei Spalten? 
+
+<div class="fragment"><small>anders gefragt: Wonach entscheiden wir, welche Faktoren wir in unser Modell einbeziehen?</small></div>
+
+> - Kaiserkriterium _(Eigenwerte > 1)_
+> - Scree-Test _(Ellenbogenkriterium)_
+> - Minimum an Varianzaufklärung _(Naja...)_
+
+## Beispiel
+
+```{r a01_e}
+a01 %>% 
+  gather(Faktor, Ladung, K1, K2, K3) %>% 
+  group_by(Faktor) %>% 
+  summarise(Eigenwert = sum(Ladung^2)) %>% 
+  ggplot(aes(Faktor, y = Eigenwert, color = Faktor, group = 1)) +
+    geom_hline(yintercept = 1, color = "green", linetype = "dashed", size = 1) +
+    geom_line(size = 1, color = "black") +
+    geom_point(size = 3.5, color = "black") +
+    geom_point(size = 2.5) +
+    annotate("label", label = "Kaiserkriterium", fill = "green", 
+             alpha = .4, x = 1.5, y = .7, size = 6) +
+    scale_y_continuous(limits = c(0, 5.5), breaks = seq(0, 4.5, 1.5)) +
+    labs(title = "Scree-Test") +
+    theme(legend.position = "none")
+```
+
+##
+
+Auf welche Faktoren laden die durch „A1“ bis „A15“ gekennzeichneten Merkmale jeweils am höchsten?
+
+![](assets/plots/ladungen.png)
+
+##
+
+Auf welche Faktoren laden die durch „A1“ bis „A15“ gekennzeichneten Merkmale jeweils am höchsten?
+
+![](assets/plots/ladungen_max.png)
+
+##
+
+Gibt es bei den - im Rahmen der Suche nach einer Einfachstruktur - innerhalb von „6)“ vorgenommenen Zuordnungen an irgendeiner Stelle ein Problem, sodass es sinnvoll erscheinen könnte, eine Rotation durchzuführen?
+
+![](assets/plots/ladungen_pcor.png)
+  
+# Aufgabe 2 <br /><br />Faktorenanalyse… Nochmal
+
+##
+
+Schauen Sie sich den **FKV** Fragebogen an und überlegen Sie, welche Items zu welchem Faktor zusammengefasst werden könnten. Führen Sie anschließend eine **Hauptkomponentenanalyse** für den FKV- Datensatz durch. Prüfen Sie, welche Faktoren Sie zuvor inhaltlich angedacht hatten und welche Faktoren die Testautoren benannt haben (siehe Folie der letzten Veranstaltung). Stimmen die statistischen Daten damit überein?
+
+```{r a02_01}
+pca.alle <- sjt.pca(fkv[-1], show.cronb = F, use.viewer = F, no.output = T)
+pca.some <- sjt.pca(fkv[-1], nmbr.fctr = 5, show.cronb = F, 
+                    show.var = T, use.viewer = F, no.output = T)
+```
+
+## 
+
+<small>
+<small>
+`r pca.alle$knitr`
+</small>
+</small>
+
+## Von den Testautoren festgelegt
+
+5 Faktoren:
+
+- Depressive Verarbeitung
+- Aktive Krankheitsverarbeitung
+- Arzt-Patient-Verhältnis
+- Sinnsuche/Religiösität
+- Verdrängung
+
+##
+
+<small>
+<small>
+<div class="col2">
+`r pca.some$knitr`
+</div>
+</small>
+</small>
+
+# Aufgabe 3 <br /><br />Variabilität
+
+##
+
+Sie haben Werte des Merkmals „**Unterrichtsstunden**“ u.a. zur Berechnung der Variabilitätsmaße und Zentralmaße verwendet. Reflektieren Sie die Zentral- und Variabilitätsmaße. Sind alle Statistiken gut geeignet?
+
+## Mittelwert, Median, Modus
+
+$$\bar{x} = \frac{1}{n} \sum^n_i x_i \approx \underline{`r round(mean(ngo$stunzahl), 3)`}$$
+
+```{r a03, eval = T}
+mvalues <- data.frame(Zentralmaß = factor(c("Mittelwert", "Median", "Modus")),
+                      Wert = as.numeric(c(mean(ngo$stunzahl), median(ngo$stunzahl), modus(ngo$stunzahl))))
+
+ggplot() +
+  geom_histogram(data = ngo, aes(x = stunzahl), binwidth = 1, alpha = .7) +
+  geom_vline(data = mvalues, aes(xintercept = Wert, color = Zentralmaß), size = 2) +
+  labs(x = "Unterrichtsstunden", y = "Häufigkeit")
+```
+
+## Varia…tions…abweichung…dings
+
+<div class = "fragment">
+**Variation**
+
+$$\sum^n_{i=1} (x_i - \bar{x})^2 \approx \underline{`r round(var(ngo$stunzahl) * (length(ngo$stunzahl) - 1), 3)`}$$
+</div>
+<div class = "fragment">
+**Varianz**
+
+$${S_x}^2 = \frac{1}{n-1} \sum^n_{i=1} (x_i - \bar{x})^2 \approx \underline{`r round(var(ngo$stunzahl), 3)`}$$
+</div>
+<div class = "fragment">
+**Standardabweichung**
+
+$$S_x = \sqrt{\frac{1}{n-1} \sum^n_{i=1} (x_i - \bar{x})^2} \approx \underline{`r round(sd(ngo$stunzahl), 3)`}$$
+</div>
+
+# Aufgabe 4 <br /><br />Standardabweichung
+
+##
+
+Sie haben folgende Zahlen vorliegen: **7, 9, 10, 11, 11, 14, 15, 16**.  
+Berechnen Sie für diese Werte die Standardabweichung per Hand.
+
+**Standardabweichung** $(S_x$ bzw. $\sigma)$: 
+
+<div class = "fragment">
+$$S_x = \sqrt{\frac{1}{n-1} \sum^n_{i = 1} (x_i - \bar{x})^2}$$
+</div>
+<span class = "fragment">$\bar{x} = 11.625 \quad \quad n = 8$</span>
+<div class = "fragment">
+$$
+\begin{aligned}
+S_x &= \sqrt{\frac{1}{8-1} \cdot \left((7-11.625)^2 + \ldots + (16-11.625)^2\right)} \\
+&= \sqrt{\frac{1}{7} \cdot (21.39 + 6.89 + \ldots + 19.14)} \\
+&= \sqrt{\frac{1}{7} \cdot 67.875} = \sqrt{9.696} \\
+&\approx \underline{3.114}
+\end{aligned}
+$$
+</div>
+
+# Aufgabe 5 <br /><br />z-Standardisierung
+
+##
+
+Berechnen Sie für die Werte 23, 27 und 31 von „stunzahl“ (Auswahl der Schülerinnen der 13. Klasse) die standardisierten Werte per Hand.
+
+```{r a05}
+values <- ngo %>% filter(jahrgang == "13", geschl == "Weiblich") %>% 
+  summarize(mean = mean(stunzahl), sd = sd(stunzahl))
+```
+
+<div class = "fragment">
+**z-Standardisierung**: 
+<br /><br/ > 
+$$
+z = \frac{x - \text{Zentrum}}{\text{Dispersion}} \Longleftrightarrow 
+z = \frac{x - \mu}{\sigma} \Longleftrightarrow 
+z_i = \frac{x_i - \bar{x}}{S_x}
+$$
+</div>
+<br />
+<div class = "fragment">
+$$\bar{x} \approx `r values$mean` \quad\quad S_x \approx `r values$sd`$$
+</div>
+<br />
+<div class = "fragment">
+$$\begin{aligned}
+23 &\longrightarrow \frac{23 - 29.52}{5.78} &&\approx \underline{-1.13} \\
+27 &\longrightarrow \frac{27 - 29.52}{5.78} &&\approx \underline{-0.44} \\
+31 &\longrightarrow \frac{31 - 29.52}{5.78} &&\approx \underline{0.26}
+\end{aligned}$$
+</div>
+
+## {data-background="img/too+easy_kiRrtNFo0UCCQ.gif" data-background-size="60%"}
+
+# Aufgabe 6 <br /><br />Normalverteilung
+
+##
+
+Ein Merkmal ist $\mathcal{N}(3, 2)$ - verteilt. Berechnen Sie die Wahrscheinlichkeit dafür, dass Merkmalsträger Werte zwischen **2** und **4.5** besitzen und die Wahrscheinlichkeit dafür, dass Merkmalsträger Werte besitzen, die kleiner als **4** sind.  
+<small>(Anmerkung: Sollte in der Klausur eine solche Frage auftauchen, erhalten Sie eine Standardnormalverteilungstabelle)</small>
+
+<div class = "fragment">
+### Was suchen wir?
+
+>- $P(2 \le x \le 4.5)$ bzw. $prob[2; 4.5]$
+>- $P(x \le 4)$ bzw. $prob(-\infty; 4]$
+>- Jeweils für den Fall $\mathcal{N}(3, 2)$
+
+</div>
+
+## Refresher: Normalverteilung
+
+<div class = "fragment">
+$$\mathcal{N}(\mu, \sigma) := \frac{1}{\sqrt{2\sigma^2\pi} } \; e^{ -\frac{(x-\mu)^2}{2\sigma^2} }$$
+</div>
+
+```{r a06_normplot}
+label_norm <- function(x) {
+  if (length(x) > 1) {
+    return(sapply(x, label_norm))
+  }
+  if (x != 0) {
+    if (abs(x) == 1) {
+      return(paste0(sub("1", "", sign(x)), "σ"))
+    } else {
+      return(paste0(x, "σ"))
+    }
+  } else {
+    return("µ")
+  }
+}
+
+ggplot(data = NULL, aes(x = -4:4)) + 
+  stat_function(fun = dnorm) +
+  geom_area(aes(x = seq(-3, 3, .1), y = dnorm(seq(-3, 3, .1))), fill = "gray", alpha = .5) +
+  geom_area(aes(x = seq(-2, 2, .1), y = dnorm(seq(-2, 2, .1))), fill = "gray", alpha = .5) +
+  geom_area(aes(x = seq(-1, 1, .1), y = dnorm(seq(-1, 1, .1))), fill = "gray", alpha = .5) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), labels = label_norm) + 
+  labs(x = "x", y = expression(P(x)), title = expression(N(mu, sigma))) + 
+  theme(panel.grid.major = element_line(size = 0.1), 
+        panel.grid.minor = element_line(linetype = "blank"),
+        axis.text.x = element_text(size = rel(2)),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+## $\mathcal{N}(3, 2) \qquad prob[2; 4.5]$
+
+```{r a06_norm_teil1}
+ggplot(data = NULL, aes(x = -4:10)) + 
+  stat_function(fun = dnorm, args = list(mean = 3, sd = 2)) +
+  geom_area(aes(x = seq(2, 4.5, .1), y = dnorm(seq(2, 4.5, .1), 3, 2)), fill = "gray", alpha = .75) +
+  scale_x_continuous(breaks = seq(-4, 10, 1)) + 
+  labs(x = "x", y = expression(P(x)), title = expression(N(3, 2))) + 
+  theme(panel.grid.major = element_line(size = 0.1), 
+        panel.grid.minor = element_line(linetype = "blank"),
+        axis.text.x = element_text(size = rel(1.3)),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+## "Kann man das ausrechnen?"
+
+<span class = "fragment"> Well… </span>
+
+<div class = "fragment" id = "left">
+I dare you.
+
+$$\int_2^{4.5} \frac{1}{\sqrt{2\sigma^2\pi} } \; e^{ -\frac{(x-\mu)^2}{2\sigma^2} } \text{d}x$$
+<br/ ></div>
+<div class = "fragment" id = "right">
+<img src="img/fuck.gif" height=200px />
+</div>
+<div class = "fragment">
+### in R
+
+- `pnorm(x, mean = m, sd = s)` $= prob(-\infty; x]$ für $\mathcal{N}(m, s)$
+- `pnorm(4.5, 3, 2) - pnorm(2, 3, 2)`
+</div>
+
+## Oder für Humanwissenschaftler\*innen…
+
+>- Werte z-Standardisieren
+
+<div class = "fragment">
+$$\begin{aligned}   
+2 & \rightarrow \frac{2-3}{2} & = -0.5 \\ 
+3 & \rightarrow \frac{4.5-3}{2} & = 0.75 
+\end{aligned}$$
+</div>
+
+>- In SNV-Tabelle nachgucken…
+>- Arithmetik
+>- Boom: $\underline{0.465}$
+
+## Pro tip: Skizzieren
+
+<div class = "fragment">
+$$\begin{align}
+prob[-0.5; 0.75] &= prob[0; 0.5] &&+ prob[0; 0.75] \\
+&\approx 0.191 &&+ 0.273 \\
+&\approx \underline{0.465}
+\end{align}$$
+</div>
+
+```{r a06_teil1_skizze, fig.height=5}
+ggplot(data = NULL, aes(x = -4:4)) + 
+  stat_function(fun = dnorm) +
+  geom_area(aes(x = seq(-0.5, 0, .1), y = dnorm(seq(-.5, 0, .1))),  fill = "lightblue", alpha = .75) +
+  geom_area(aes(x = seq(0, 0.75, .1), y = dnorm(seq(0, 0.75, .1))), fill = "darkblue",  alpha = .75) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), minor_breaks = seq(-4, 4, .5)) + 
+  labs(x = "x", y = expression(P(x)), title = expression(N(0, 1))) + 
+  theme(panel.grid.major = element_line(size = 0.1), 
+        panel.grid.minor = element_line(linetype = "blank"),
+        axis.text.x = element_text(size = rel(1.3)),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+## $\mathcal{N}(3, 2) \qquad prob(-\infty, 4]$
+
+```{r a06_norm_teil2}
+ggplot(data = NULL, aes(x = -4:10)) + 
+  stat_function(fun = dnorm, args = list(mean = 3, sd = 2)) +
+  geom_area(aes(x = seq(-4, 4, .1), y = dnorm(seq(-4, 4, .1), 3, 2)), fill = "gray", alpha = .75) +
+  scale_x_continuous(breaks = seq(-4, 10, 1)) + 
+  labs(x = "x", y = expression(P(x)), title = expression(N(3, 2))) + 
+  theme(panel.grid.major = element_line(size = 0.1), 
+        panel.grid.minor = element_line(linetype = "blank"),
+        axis.text.x = element_text(size = rel(1.3)))
+```
+
+You get the idea.
+
+## Same old same old
+
+<div class = "fragment">$$prob(-\infty; 0] = prob[0; \infty) = 0.5 $$</div>
+<div class = "fragment">$$4 \rightarrow \frac{4-3}{2} = 0.5$$</div>
+
+<div class = "fragment">
+```{r a06_teil2_skizze, fig.height=4}
+ggplot(data = NULL, aes(x = -4:4)) + 
+  stat_function(fun = dnorm) +
+  geom_area(aes(x = seq(-4, 0, .1), y = dnorm(seq(-4, 0, .1))),  fill = "lightblue", alpha = .75) +
+  geom_area(aes(x = seq(0, 0.5, .1), y = dnorm(seq(0, 0.5, .1))), fill = "darkblue",  alpha = .75) +
+  annotate("label", x = .22,  y = .21, label = "0.191") +
+  annotate("label", x = -.22, y = .19, label = "0.5") +
+  scale_x_continuous(breaks = seq(-4, 4, 1), minor_breaks = seq(-4, 4, .5)) + 
+  labs(x = "x", y = expression(P(x)), title = expression(N(0, 1))) + 
+  theme(panel.grid.major = element_line(size = 0.1), 
+        panel.grid.minor = element_line(linetype = "blank"),
+        axis.text.x = element_text(size = rel(1.3)))
+```
+</div>
+<div class = "fragment">$$\Longrightarrow prob(-\infty; 0.5] = 0.5 + 0.191 \approx 0.691$$</div>
+
+# Aufgabe 7 <br /><br />z-Standardisierung<br /><small>Schon wieder</small>
+
+##
+
+Eine Person hat in drei Tests (T1, T2 und T3) folgende drei Punktzahlen erreicht:
+
+$$T1=10 \quad T2=10 \quad T3=10$$
+  
+Als **Mittelwert** wurde für T1 der Wert 10, für T2 der Wert 15 und für T3 der Wert 20 ermittelt.  
+Die **Standardabweichungen** betragen bei T1=2, T2=1 und bei T3=1,5.
+
+a) In welchem der Tests hat die Person am besten abgeschnitten? Und warum?
+b) Welchen Wert könnte man der Person als Gesamttestwert sinnvoll zuordnen?  
+Und welche Informationen sind wichtig für Sie, um eine geeignete Zuordnung zu wählen?
+
+## Oh glob so langweilig
+
+<div class = "fragment">
+### Test 1
+
+$$T_1 = 10 \qquad\bar{x} = 10  \qquad S_x = 2 \qquad z = \frac{10 - 10}{2} = \underline{0}$$
+</div><div class = "fragment">
+### Test 2
+
+$$T_2 = 10 \qquad \bar{x} = 15  \qquad S_x = 1 \qquad z \frac{10 - 15}{1} = \underline{-5}$$
+</div><div class = "fragment">
+### Test 3
+
+$$T_3 = 10 \quad \bar{x} = 20  \qquad S_x = 1.5 \qquad z = \frac{10 - 20}{1.5} = \underline{-6.\bar{6}}$$
+</div>
+
+# Aufgabe 8 <br /><br />$\chi^2$, Cramér's $V$<br /><small>\*sigh\* …und $C$</small>
+
+##
+
+Erstellen Sie eine Kontingenztabelle mit dem Zeilenmerkmal `abschalt` (**Abschalten**) und dem Spaltenmerkmal `jahrgang` (**Jahrgangsstufe**). Berechnen Sie die Indifferenztabelle und den $\chi^2$ Wert sowie $C$ und $V$ per Hand.  
+Interpretieren Sie diese Ergebnisse.
+
+## Kontingenz- und Indifferenztabelle
+
+```{r a08}
+t_8 <- sjt.xtab(ngo$abschalt, ngo$jahrgang, 
+               show.exp = T,
+               show.legend = T, show.summary = F,
+               use.viewer = F, no.output = T)
+```
+
+<div class = "fragment" id = "left">
+`r t_8$knitr`
+</div>
+
+<div class = "fragment" id = "right">
+$$\begin{aligned}
+f_e &= \frac{\text{Zeilensumme} \cdot \text{Spaltensumme}}{n} \\\\
+f_{e_1} &= \frac{138 \cdot 97}{246} \approx 54 \\\\
+f_{e_2} &= \frac{138 \cdot 99}{246} \approx 56 \\\\
+&\ldots
+\end{aligned}$$
+</div>
+
+
+## To the math! /o/
+
+<div id = "left">
+
+`r t_8$knitr`
+</div>
+<div id = "right">
+<div class = "fragment">
+\[\begin{aligned}
+\chi^2 &= \sum_{\text{Alle Zellen}} \frac{(f_b - f_e)^2}{f_e} \\
+ &= \frac{(57 - 54)^2}{54} + \ldots + \frac{(22 - 22)^2}{22} \\
+ &= 0.167 + \ldots + 0 \\
+ &\approx \underline{0.544}
+\end{aligned}\]
+
+<div class = "fragment">
+\[\begin{aligned}
+\text{Cramér's}\ V & = \sqrt{\frac{\chi^2}{n \cdot \operatorname{min}(r-1, c-1)}} \\
+                  & = \sqrt{\frac{0.544}{246 \cdot 1}} \\
+                  &\approx \underline{0.047}
+\end{aligned}\]
+</div>
+</div>
+</div>
+
+## Kontingenzkoeffizient $C$
+
+<small>Die bucklige Verwandschaft</small>
+
+<div class = "fragment" data-fragment-index="1">
+$$C = \sqrt{\frac{\chi^2}{\chi^2 + n}} = \sqrt{\frac{0.544}{0.544 + 246}} \approx \underline{0.047}$$
+</div>
+<span class = "fragment" data-fragment-index="2">Und dann noch irgendwas mit $C_{\text{max}}$ und $C_{\text{korr}}$ …?</span>
+
+<div class = "col3">
+<div class = "fragment" data-fragment-index="3">
+$$
+\begin{aligned}
+C_{\text{max}} &= \sqrt{\frac{r-1}{r}} \\\\
+&= \sqrt{\frac{2-1}{2}} \\\\
+&\approx \underline{0.707}
+\end{aligned}
+$$
+</div>
+
+<img class = "fragment" data-fragment-index="5" src="img/annoyed_E7iIfUlWHBmh2.gif" />
+
+<div class = "fragment" data-fragment-index="4">
+$$
+\begin{aligned}
+C_{\text{korr}} &= \frac{C}{C_{\text{max}}} \\\\
+&= \frac{0.047}{0.707} \\\\
+&\approx \underline{0.066}
+\end{aligned}
+$$
+</div>
+</div>
+
+# Aufgabe 9 <br /><br />Ordinalskalierte Statistiken
+
+```{r a_09_01}
+ngo %<>% mutate(
+  begabung_k = cut(begabung, c(-Inf, 3, 6, Inf), c(1:3))
+)
+
+a09_sjt <- sjt.xtab(ngo$begabung_k, ngo$jahrgang, 
+                    var.labels = c("Begabung (klassiert)", "Jahrgang"),
+                    show.row.prc = F, show.exp = F, show.legend = F, show.summary = F,
+                    use.viewer = F, no.output = T)
+```
+
+##
+
+Sie haben die Werte der Variablen „Begabung“ klassiert, indem die Werte _1, 2 und 3_ in den neuen Wert **1**, die Werte _4, 5 und 6_ in den neuen Wert **2** und die Werte _7, 8 und 9_ in den neuen Wert **3** rekodiert wurden.
+
+Berechnen Sie auf Basis einer Kontingenztabelle der rekodierten Variablen „Begabung“ und „Jahrgang“ Folgendes per Hand:
+
+a) Die Anzahl der **konkordanten** Paare
+b) Die Anzahl der **diskordanten** Paare
+c) Die Anzahl der **Bindungen**
+d) Welche Schlüsse kann man nur aufgrund 1-3) bzgl. der statistischen Beziehung ziehen?
+e) Berechnen Sie aufgrund 1) und 2) den Wert für Gamma. Besteht ein statistischer Zusammenhang? 
+f) Wäre eine andere Statistik geeigneter?
+
+## 
+
+<div class="col2">
+`r a09_sjt$knitr`
+
+<br /><br />
+
+Bindungen (horizontal):
+<div class = "fragment">
+$$
+\begin{align}
+t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
+& + (63 \cdot (46 + 26)) + (46 \cdot 26) \\
+& + (36 \cdot (54 + 24)) + (54 \cdot 24) \\\\
+& = \underline{9836}
+\end{align}
+$$
+</div>
+</div>
+
+
+<div class="col2">
+Konkordante Paare:
+<div class = "fragment">
+$$
+\begin{align}
+N_c &= (1  \cdot (46 + 26 + 54 + 24)) \\
+&+ (0  \cdot (26 + 24))  \\
+&+ (63 \cdot (54 + 24))  \\
+&+ (46 \cdot 24)         \\\\
+& = \underline{6168}
+\end{align}
+$$
+</div>
+
+Diskordante Paare: 
+<div class = "fragment">
+$$
+\begin{align}
+N_d &= (0 \cdot (63 + 46 + 36 + 54))  \\
+&+ (0  \cdot (63 + 36)) \\
+&+ (26 \cdot (36 + 54)) \\
+&+ (46 \cdot 36)        \\\\  
+& =  \underline{3996}
+\end{align}
+$$
+</div>
+</div>
+
+## $\gamma$ und Somers' $d$
+
+<div id = "left" class = "fragment">
+$$
+\begin{aligned}
+\gamma & = \frac{N_c - N_d}{N_c + N_d} \\\\
+& = \frac{6168 - 3996}{6168 + 3996} \\\\
+& = \frac{2172}{10164} \\\\
+& \approx \underline{0.214}
+\end{aligned}
+$$
+</div>
+
+<div id = "right" class = "fragment">
+$$
+\begin{aligned}
+\text{Somers' } d & = \frac{N_c - N_d}{N_c + N_d + t} \\\\
+& = \frac{6168 - 3996}{6168 + 3996 + 9836} \\\\
+& = \frac{2172}{20000} \\\\
+& \approx \underline{0.109}
+\end{aligned}
+$$
+</div>
+
+<span class = "fragment">
+\*GASP*\! Damit konnte ja niemand rechnen!
+</span>
+
+## Tau A 
+
+$$
+\begin{aligned}
+\tau_a &= \dfrac{N_c - N_d}{\dfrac{(n-1) \cdot n}{2}} \\\\
+&= \frac{6168 - 3996}{\dfrac{249 \cdot 250}{2}} \\\\
+&= \ldots
+\end{aligned}
+$$
+
+<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</span>
+
+## Tau B
+
+$$
+\begin{aligned}
+\tau_b &= \frac{N_c - N_d}{\sqrt{(N_c + N_d + t_x)(N_c + N_d + t_y)}} \\\\
+&= \frac{6168 - 3996}{\sqrt{(10164 + 9836)(10164 + 5475)}} \\\\
+&\approx \underline{0.123}
+\end{aligned}
+$$
+
+<div class = "fragment">Wenigstens durften wir's anwenden ¯\\\_(ツ)_/¯</span>
+
+## Tau C
+
+$$
+\begin{aligned}
+\tau_c &= \dfrac{N_c - N_d}{\dfrac{1}{2} \cdot n^2 \cdot \dfrac{m-1}{m}} \quad |\ m = \operatorname{min}(r-1, c-1) \\\\
+&= \dfrac{6168 - 3996}{\dfrac{1}{2} \cdot 250^2 \cdot \dfrac{2-1}{2}} \\\\
+&= \ldots
+\end{aligned}
+$$
+
+<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</span>
+
+## Long story short: Die Tau's
+
+| Tau | Bindungen | Quadratisch | Nicht-Quadratisch |
+|-----|-----------|-------------|-------------------|
+| A   | 👎        | ¯\\\_(ツ)_/¯| ¯\\\_(ツ)_/¯      |
+| B   | 👍        | 👍         | 👎                |
+| C   | 👎        | 👎         | 👍                |
+
+<div class = "fragment">Die Lektion: Einfach nicht benutzen</div>
+<div class = "fragment">…Außer ihr seid euch ganz sicher</div>
+
+# Aufgabe 10 <br /><br />Regression
+
+## Beantworten Sie folgende Fragen:
+
+a) Was versteht man unter einem Residuum, der Niveaukonstante und dem Steigungskoeffizienten?
+b) Welche formale Beziehung besteht zwischen der Kovarianz und dem Steigungskoeffizienten?
+c) Was bedeutet es, wenn die Regressionsgerade parallel zur X-Achse verläuft?
+d) Welche Eigenschaften besitzt die Regressionsgerade?
+
+## Wie geht so 'ne Regression?
+
+Unser Modell: $$y = a + bx$$ bzw $$y = a + bx + e$$
+
+Regressionsgerade: $$y' = a + bx$$
+
+> - $y$ = Der Wert, den wir voraussagen wollen
+> - $y'$ = Der y-Wert der Regressionsgeraden (_Prognosewert_)
+> - $x$ = Den kennen wir schon  
+> - $a$ = Der $y$-Wert bei $x = 0$ (_Niveaukonstante_)
+> - $b$ = Der Wert, um den sich $y$ verändert, wenn sich $x$ um 1 erhöht (_Steigungskoeffizient_)  
+> - $e$ = Der vertikale Abstand zur Regressionsgeraden (_Residuum_)
+
+## Formeln <small>Just in case</small>
+
+<div class = "fragment" id = "left">
+$$
+S_{x,y} = \frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right) \cdot \left(y_i - \bar{y}\right)
+$$
+</div>
+
+<div class = "fragment" id = "right">
+$$
+a = \bar{y} - b\bar{x}
+$$
+</div>
+
+<div class="fragment">
+$$
+b = \frac{S_{x,y}}{{S_x}^2}
+$$
+</div>
+
+## Beispiel gefällig?
+
+```{r a10_01, echo=F, fig.height=7, fig.width=12}
+r_a10 <- round(cor(zombo$Skill_08, zombo$Skill_03, use = "complete.obs"), 2)
+
+ggplot(zombo, aes(x = Skill_03, y = Skill_08)) +
+  geom_jitter(color = "black", alpha = 0.7, height = .3, width = .3, size = 1.5) +
+  geom_smooth(method = "lm", se = F, color = "red", size = 1, fullrange = T) +
+  scale_x_continuous(breaks = seq(0, 10, 2), minor_breaks = 1:10, limits = c(0, 10)) +
+  scale_y_continuous(breaks = seq(0, 10, 2), minor_breaks = 1:10, limits = c(0, 10)) +
+  labs(title = "Zusammenhang zwischen körperlicher Fitness und Ausdauer",
+       subtitle = paste("r =", r_a10, "| a = 1.705 | b = 0.707"),
+       x = get_label(zombo$Skill_03),
+       y = get_label(zombo$Skill_08)) +
+  theme_readthedown(base_size = 20)
+```
+
+## Gut zu wissen: $r$ & $R^2$
+
+<div class = "fragment">
+$$
+\begin{aligned}
+r &= \frac{S_{x,y}}{S_x \cdot S_y}
+  &&= \frac{\frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right) \cdot \left(y_i - \bar{y}\right)}
+        {\sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right)^2} \cdot
+        \sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(y_i - \bar{y}\right)^2}} \\\\
+R^2 &= \frac{E_1 - E_2}{E_1}
+  &&= \frac{\sum^n_{i=1} \left(y_i - \bar{y}\right)^2 - \sum^n_{i=1} \left(y_i - y'_i\right)^2}
+           {\sum^n_{i=1} \left(y_i - \bar{y}\right)^2}
+\end{aligned}
+$$
+</div>
+<br />
+<div class = "fragment" id = "left">
+Auch wenn es nicht sofort so aussieht:
+$$R^2 = r^2$$
+<br />
+<small>Nein, ihr müsst das nicht herleiten können</small>
+</div>
+<div class = "fragment" id = "right">
+<img src="img/beginning_pObOoBLMhizQs.gif" width=150px />
+</div>
+
+## 
+
+Was bedeutet es, wenn die Regressionsgerade parallel zur X-Achse verläuft?
+
+```{r a10_02, echo=F, fig.height=7, fig.width=12}
+x <- seq(0, 20, .1)
+
+quad <- data.frame(x  = x,
+                   y  = 200 - 2*(x - 10)^2) + rnorm(length(x), 0, .5)
+
+a10_r <- round(cor(quad$x, quad$y), 3)
+
+ggplot(quad, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  scale_x_continuous(limits = c(0, 20)) +
+  scale_y_continuous(limits = c(0, 200)) +
+  labs(title = "Beispiel: Parallelität zur x-Achse") +
+  theme(axis.text = element_blank())
+```
+
+## 
+
+Was bedeutet es, wenn die Regressionsgerade parallel zur X-Achse verläuft?
+
+```{r a10_03, echo=F, fig.height=7, fig.width=12}
+ggplot(quad, aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  scale_x_continuous(breaks = seq(0, 20, 5), minor_breaks = seq(0, 20, 2.5), 
+                     labels = c("gering", rep("", 3), "viel")) +
+  scale_y_continuous(breaks = seq(0, 200, 50), minor_breaks = seq(0, 200, 25), 
+                     labels = c("niedrig", rep("", 3), "hoch")) +
+  labs(x = "Stress", y = "Leistung", title = "Beispiel: Yerkes-Dodson-Gesetz",
+       subtitle = paste("r =", a10_r), caption = "Quelle: simulierte Daten")
+```
+
+## Eigenschaften der Regressionsgeraden
+
+>1. Sie geht immer durch den Punkt $P(\bar{x} | \bar{y})$
+>2. Die Gerade mit den geringsten Residuenquadraten
+>3. Der Steigungskoeffizient ($b$) gibt die Richtung der Korrelation an
+
+## Zurück zum ersten Beispiel
+
+```{r a10_04, echo=F, fig.height=7, fig.width=12}
+ggplot(zombo, aes(x = Skill_03, y = Skill_08)) +
+  geom_ribbon(aes(x = seq(1, 2, 0.009434067), ymin = 2.412, ymax = seq(2.412, 3.119, 0.00673333333)),
+              fill = "blue", alpha = 0.3) +
+  geom_hline(yintercept = mean(zombo$Skill_08, na.rm = T), linetype = "longdash", color = "green") +
+  geom_vline(xintercept = mean(zombo$Skill_03, na.rm = T), linetype = "longdash", color = "green") +
+  geom_jitter(color = "black", alpha = 0.7, height = .3, width = .3, size = 1.5) +
+  geom_smooth(method = "lm", se = F, color = "red", size = .5, fullrange = T) +
+  annotate("text", x = 5.25, y = 9.6, label = "bar(x)", color = "green", size = 8, parse = T) +
+  annotate("text", x = 0.25, y = 5.1, label = "bar(y)", color = "green", size = 8, parse = T) +
+  annotate("text", x = 9.75, y = 8.2, label = "y'", color = "darkred", size = 8) + 
+  annotate("label", x = 6.05, y = 4.95, label = "P(bar(x)~'|'~bar(y))",
+           fill = "green", size = 8, parse = T, alpha = .7) +
+  annotate("text", x = 2.15, y = 2.75, label = "b", color = "darkblue", size = 8) +
+  scale_x_continuous(breaks = seq(0, 10, 2), minor_breaks = 1:10, limits = c(0, 10)) +
+  scale_y_continuous(breaks = seq(0, 10, 2), minor_breaks = 1:10, limits = c(0, 10)) +
+  labs(title = "Zusammenhang zwischen körperlicher Fitness und Ausdauer",
+       subtitle = paste("r =", r_a10, "| a = 1.705 | b = 0.707"),
+       x = get_label(zombo$Skill_03),
+       y = get_label(zombo$Skill_08)) +
+  theme_readthedown(base_size = 20)
+```
+
+# Aufgabe 11 <br /><br />Korrelationskoeffizient $r$
+
+```{r a11_01}
+a11 <- data.frame(
+  ID = factor(c(1:5)),
+  T1 = c(120, 95, 100, 110, 90),
+  T2 = c(110, 90, 110, 115, 100)
+)
+```
+
+##
+
+Geben Sie die Formel des Korrelationskoeffizienten von Pearson an.  
+Reflektieren Sie nochmals die Herleitung.  
+Berechnen Sie die Korrelation aus folgenden Diät-Daten von Männern:
+
+- Gewicht erster Messzeitpunkt: **120, 95, 100, 110, 90**  
+- Gewicht zweiter Messzeitpunkt: **110, 90, 110, 115, 100**
+
+## Also ungefähr so…
+
+```{r a11_02a}
+a11 %>% 
+  ggplot(aes(x = T1, y = T2)) +
+    geom_point(size = 3) +
+    labs(x = "Gewicht (in kg) zu Messzeitpunkt 1",
+         y = "Gewicht (in kg) zu Messzeitpunkt 2")
+```
+
+## …Oder besser so?
+
+```{r a11_02b}
+a11 %>% 
+  gather(Zeitpunkt, Gewicht, T1, T2) %>% 
+  ggplot(aes(x = Zeitpunkt, y = Gewicht, group = ID, color = ID)) +
+    geom_line() +
+    geom_jitter(width = .02, height = 0, size = 3) +
+    scale_color_brewer(palette = "Set1") +
+    labs(y = "Gewicht (in kg)") +
+    theme(legend.position = "none")
+```
+
+## Pearson's $r$
+
+<div class = "fragment">
+In kurz:
+
+$$r = \frac { s_{x, y} }{ s_{x} \cdot s_{y} }$$
+</div>
+<div class = "fragment">
+In lang:
+
+$$
+r = \frac{\frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right) \cdot \left(y_i - \bar{y}\right)}
+        {\sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right)^2} \cdot
+        \sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(y_i - \bar{y}\right)^2}}
+$$
+</div>
+
+## Einmal $r$ per Hand
+
+### Schritt 1: $S_x$ Standardabweichung von $x$
+
+- $x = 120, 95, 100, 110, 90$ mit $\bar{x} = 103$
+
+
+$$
+\begin{aligned}
+S_x &= \sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right)^2} \\
+&= \sqrt{\frac{1}{5-1} \cdot \left((120-103)^2 + (95-103)^2 + (100-103)^2 + (110-103)^2 + (90-103)^2\right)} \\
+&= \sqrt{\frac{1}{4} \cdot \left(289 + 64 + 9 + 49 + 169\right)} \\
+&= \sqrt{\frac{580}{4}} \\
+&\approx \underline{12.04}
+\end{aligned}
+$$
+
+## Einmal $r$ per Hand
+
+### Schritt 2: $S_y$ Standardabweichung von $y$
+
+- $y = 110, 90, 110, 115, 100$ mit $\bar{y} = 105$
+
+$$
+\begin{aligned}
+S_y &= \sqrt{\frac{1}{n-1} \sum^n_{i=1} \left(y_i - \bar{y}\right)^2} \\
+&= \sqrt{\frac{1}{5-1} \cdot \left((110-105)^2 + (90-105)^2 + (110-105)^2 + (115-105)^2 + (100-105)^2\right)} \\
+&= \sqrt{\frac{1}{4} \cdot \left(25 + 225 + 25 + 100 + 25\right)} \\
+&= \sqrt{\frac{400}{4}} \\
+&= \underline{10}
+\end{aligned}
+$$
+
+## Einmal $r$ per Hand
+
+### Schritt 3: $S_{x,y}$ Kovarianz von $x$ und $y$
+
+$$
+\begin{aligned}
+S_{x,y} &= \frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right) \cdot \left(y_i - \bar{y}\right) \\
+&= \frac{1}{5-1} \cdot \left(((120-103) \cdot (110-105)) + ((95-103) \cdot (90-105)) + ((100-103) \cdot (110-105)) + ((110-103) \cdot (115-105)) + ((90-103) \cdot (100-105)) \right) \\
+&= \frac{1}{5-1} \cdot \left((17 \cdot 5) + (-8 \cdot -15) + (-3 \cdot 5) + (7 \cdot 10) + (-13 \cdot -5)\right) \\
+&= \frac{1}{5-1} \cdot \left( 85 + 120 + -15 + 70 + 65 \right) \\
+&= \frac{1}{4} \cdot 325 = \frac{325}{4} \\
+&= \underline{81.25}
+\end{aligned}
+$$
+
+## Einmal $r$ per Hand
+
+Wir halten fest:
+
+- $S_x = 12.04$
+- $S_y = 10$
+- $S_{x,y} = 81.25$
+- $\Longrightarrow r = \frac{81.25}{12.04 \cdot 10} \approx 0.67$
+
+## Kurzer Abstecher: Eta $\eta^2$
+
+<div>
+<div id = "left" class = "fragment">
+$Y$-Variation in Gruppe $j$  
+$$
+\sum^{n_j}_{i=1} \left(y_{j,i} - \bar{y}_j\right)^2
+$$
+</div>
+
+<div id = "left" class = "fragment">
+Gesamtvariation von $Y$
+$$
+\sum^n_{i=1} (y_i - \bar{y})^2 = 
+\sum^k_{j=1}\sum^{n_j}_{i=1} \left(y_{j,i} - \bar{y}\right)^2
+$$
+</div></div>
+<br /><br />
+<div class = "fragment">
+$$
+\eta^2 = \frac{\sum^{n_j}_{i=1} \left(y_{j,i} - \bar{y}_j\right)^2 - \sum^k_{j=1}\sum^{n_j}_{i=1} \left(y_{j,i} - \bar{y}_j\right)^2}{\sum^{n_j}_{i=1} \left(y_{j,i} - \bar{y}_j\right)^2}
+\quad \quad
+\left(\Longrightarrow \text{PRE} = \frac{E_1 - E_2}{E_1}\right)
+$$
+</div>
+<img class = "fragment" src = "img/unimpressed_u7gAmp9lCZWPC.gif" />
+
+
+## Problem: Was betrachten wir?
+
+```{r a11_03}
+a11_neut <- data.frame(
+  ID = factor(c(1:5)),
+  T1 = c(120, 95, 100, 110, 90),
+  T2 = c(120, 95, 100, 110, 90)
+)
+
+a11_n_long <- a11_neut %>% 
+  gather(Zeitpunkt, Gewicht, T1, T2) %>% 
+  mutate(Zeitpunkt = factor(Zeitpunkt))
+
+
+a11_up <- data.frame(
+  ID = factor(c(1:5)),
+  T1 = c(120, 95, 100, 110, 90),
+  T2 = c(128, 99, 112, 115, 95)
+)
+
+a11_u_long <- a11_up %>% 
+  gather(Zeitpunkt, Gewicht, T1, T2) %>% 
+  mutate(Zeitpunkt = factor(Zeitpunkt))
+
+a11_down <- data.frame(
+  ID = factor(c(1:5)),
+  T1 = c(120, 95, 100, 110, 90),
+  T2 = c(108, 91, 93, 100, 86)
+)
+
+a11_d_long <- a11_down %>% 
+  gather(Zeitpunkt, Gewicht, T1, T2) %>% 
+  mutate(Zeitpunkt = factor(Zeitpunkt))
+
+a11_plot <- rbind(a11_neut, a11_up, a11_down) %>% 
+  mutate(Diät = c(rep("Unverändert", 5),
+                  rep("Zunahme", 5),
+                  rep("Abnahme", 5)))
+```
+
+<div class="col3">
+Unverändert: 
+
+$$\begin{aligned}
+r &= `r cor(a11_neut$T1, a11_neut$T2)` \\
+r_{pb} &= `r cor(as.numeric(a11_n_long$Zeitpunkt), a11_n_long$Gewicht)`
+\end{aligned}$$
+
+`r kable(a11_neut)`
+
+Zunahme: 
+
+$$\begin{aligned}
+r &= `r cor(a11_up$T1, a11_up$T2)` \\
+r_{pb} &= `r cor(as.numeric(a11_u_long$Zeitpunkt), a11_u_long$Gewicht)`
+\end{aligned}$$
+
+`r kable(a11_up)`
+
+Abnahme: 
+
+$$\begin{aligned}
+r &= `r cor(a11_down$T1, a11_down$T2)` \\
+r_{pb} &= `r cor(as.numeric(a11_d_long$Zeitpunkt), a11_d_long$Gewicht)`
+\end{aligned}$$
+
+`r kable(a11_down)`
+
+</div>
+
+## 
+
+```{r a11_04}
+ggplot(a11_plot, aes(x = T1, y = T2)) +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  geom_point(size = 3) +
+  facet_wrap(~Diät, ncol = 3) +
+  labs(x = "Gewicht (in kg) zu Messzeitpunkt 1",
+       y = "Gewicht (in kg) zu Messzeitpunkt 2")
+  
+rm(a11_neut, a11_up, a11_down, a11_n_long, a11_u_long, a11_d_long, a11_plot)
+```
+
+# Aufgabe 12 <br /><br />Kappa $\kappa$
+
+##
+
+27 Patienten sind von zwei Ärzten untersucht und im Hinblick auf ihren Gesundheitszustand in der folgenden Form als _krank_ bzw. _gesund_ eingestuft worden
+
+| Einschätzung 	|        	| Arzt A 	|        	|
+|--------------	|--------	|--------	|--------	|
+|              	|        	| krank  	| gesund 	|
+| Arzt B       	| krank  	| 8      	| 3      	|
+|              	| gesund 	| 4      	| 12     	|
+
+
+Es ist die Statistik „Kappa“ -ohne Software- zu ermitteln und anschließend zu interpretieren.
+
+## Kappa $\kappa$
+
+<div class = "fragment">
+$$\kappa = \frac{h_b - h_e}{1 - h_e}$$
+</div><div class = "fragment">
+$$ h_b = \frac{1}{n} \sum^m_{j = 1} f_{j,j} \qquad h_e = \frac{1}{n} \sum^m_{j = 1} f_{e_{j,j}} $$
+</div>
+<div class = "fragment" id = "left">
+$$\begin{alignat}{2}
+n &= 27 \\\\
+h_b &= \frac{1}{27} \cdot (8 + 12) &&\approx \underline{0.741} \\\\
+h_e &= \frac{1}{27} \cdot (4.\bar{8} + 8.\bar{8}) &&\approx  \underline{0.51}
+\end{alignat}$$
+</div>
+<div class = "fragment" id = "right">
+$$\begin{aligned}
+\kappa &= \frac{h_b - h_e}{1 - h_e} \\\\
+&= \frac{0.741 - 0.51}{1 - 0.51} \\\\
+&\approx \underline{0.47}
+\end{aligned}$$
+</div>
+
+# Aufgabe 13 <br /><br />Kovariation
+
+##
+
+Wie fällt die Kovariation in den Streudiagrammen 1 bis 3 tendenziell aus (im Vergleich zu dem Wert 0):
+
+![](https://dump.jemu.name/2017-02-b6g4ggt5gpy9n36.png)
+ 
+# Aufgabe 14<br /><br />Kovariation<br /><br /><small>…Immer noch</small>
+
+## 
+
+Versuchen Sie das Prinzip der Kovariation grafisch in einem Streudiagramm zu veranschaulichen. Zeichnen Sie hierfür ein beliebiges Streudiagramm. Die Grafik setzt sich von der Aufgabe 13 ab.
+
+_(Tipp: denken Sie daran, wie die Variation damals grafisch auf Basis von Quadraten erklärt wurde)_
+
+## Quadradatanten
+
+Im Kontext der Kovarianz sind die Quadranten gemeint, die sich aus $\bar{x}$ und $\bar{y}$ ergeben
+
+```{r a14_quads}
+xval <- seq(-10, 10, .1)
+d14  <- data.frame(x = xval, y = (xval + rnorm(length(xval), 0, 2)))
+
+ggplot(data = d14, aes(x = x, y = y)) +
+  annotate("rect", xmin = -10, xmax = 0,  ymin = -10, ymax = 0,  fill = "red",    alpha = .5) +
+  annotate("rect", xmin = -10, xmax = 0,  ymin = 0,   ymax = 10, fill = "blue",   alpha = .5) +
+  annotate("rect", xmin = 0,   xmax = 10, ymin = -10, ymax = 0,  fill = "green",  alpha = .5) +
+  annotate("rect", xmin = 0,   xmax = 10, ymin = 0,   ymax = 10, fill = "yellow", alpha = .5) +
+  geom_point() +
+  geom_hline(yintercept = 0, size = 3) +
+  geom_vline(xintercept = 0, size = 3) +
+  annotate("label", x = 9.5,  y = 1,  label = "1") +
+  annotate("label", x = -9.5, y = 1,  label = "2") +
+  annotate("label", x = -9.5, y = -1, label = "3") +
+  annotate("label", x = 9.5,  y = -1, label = "4") +
+  coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+  labs(x = expression(bar(x)), y = expression(bar(y))) + 
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title.x = element_text(hjust = .5, vjust = .5))
+rm(xval)
+```
+
+## {data-background="img/beginning_QYYmLRHhX9K7e.gif" data-background-size="60%"}
+
+# Aufgabe 15<br /><br />Multiple Regression
+
+##
+
+Erläutern Sie die Probleme, die im Rahmen einer multiplen Regression auftreten können. 
+
+>- Verderben
+>- Jucken im Schritt
+>- Multikolinearität 
+>- (Unerwartete/Nicht beachtete) Partialkorrelationen
+>- Note: Multiples $R^2$ ist… *anders* als bisheriges $R^2$ und $r$ 
+
+## Look at this mindfuck
+
+```{r a15}
+plotly::plot_ly(data = ngo, x = ~deutsch, y = ~englisch, z = ~mathe)
+```
+
+## {data-background="img/unimpressed_G5X63GrrLjjVK.gif" data-background-size="30%"}
+
+# Aufgabe 16<br /><br />Partialkorrelation
+
+##
+
+Was versteht man unter dem Begriff „Partialkorrelation“?  
+Geben Sie ein Beispiel.
+
+```{r a16_01}
+brand <- mvrnorm(200, mu = c(5, 12000, 200), 
+                 Sigma = matrix(c(1, .56, .8, .56, 1, .82, .8, .82, 1), ncol = 3),
+                 empirical = TRUE)
+
+brand <- data.frame(brand)
+names(brand) <- c("Personen", "Schaden", "Fläche")
+
+cor.tbl  <- cor(brand)
+pcor.tbl <- pcor(brand)$estimate
+```
+
+<small>
+<div class="fragment col2">
+`r kable(cor.tbl, caption = "Korrelationstabelle")`
+
+`r kable(pcor.tbl, caption = "Partialkorrelationstabelle")`
+</div>
+</small>
+
+## 
+
+```{r a16_02, fig.height=4, fig.width=12}
+ggplot(brand, aes(x = Personen, y = Schaden)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  labs(title = "Brandschaden und Personen im Einsatz")
+```
+
+<div id="left">
+```{r a16_03, fig.height=4, fig.width=6}
+ggplot(brand, aes(x = Fläche, y = Personen)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  labs(title = "Brandfläche und Personen im Einsatz")
+```
+</div>
+
+<div id="right">
+```{r a16_04, fig.height=4, fig.width=6}
+ggplot(brand, aes(x = Fläche, y = Schaden)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  labs(labs = "Brandfläche und Brandschaden")
+```
+</div>
+
+## 
+
+```{r a16_05}
+m1 <- lm(Personen ~ Fläche, brand)
+m2 <- lm(Schaden ~ Fläche, brand)
+
+konst <- data.frame(
+  Personen = m1$residuals * sd(brand$Personen) + mean(brand$Personen),
+  Schaden  = m2$residuals * sd(brand$Schaden) + mean(brand$Schaden)
+)
+
+ggplot(konst, aes(x = Personen, y = Schaden)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "red") +
+  labs(x = "Personen", y = "Schaden", 
+       title = "Zusammenhang von Brandschaden und Anzahl Personen im Einsatz",
+       subtitle = "unter Konstanthaltung der Brandfläche")
+```
+
+# Klar soweit?
+
+## Nochmal zum nachlesen
+
+<span class = "big">[public.tadaa-data.de/QM](https://public.tadaa-data.de/QM)</span>
+
+## {data-background="img/mic-drop.gif" data-background-size="60%"}
