@@ -32,7 +32,7 @@ output:
     fig_width: 9
     number_sections: no
     self_contained: no
-    lib_dir: "assets"
+    lib_dir: "assets/libs"
     toc: yes
     toc_float: true
     code_folding: show
@@ -75,15 +75,12 @@ theme_set(theme_tadaa(base_size = 16))
 <div class = "fragment">
 ### Slides
 
-<span class = "big">[link.jemu.name/qmpW17](https://link.jemu.name/qmpW17)</span>
+<span class = "big">[https://tadaa.click/qm1ws1718](https://tadaa.click/qm1ws1718)</span>
 </div><div class = "fragment">
 ### Alles auf einmal
 
-<span class = "big">[link.jemu.name/qmpW17w](https://link.jemu.name/qmpW17w)</span>
+<span class = "big">[https://tadaa.click/qm1ws1718w](https://tadaa.click/qm1ws1718w)</span>
 </div><div class = "fragment">
-### Ordner
-
-<span class = "big">[public.tadaa-data.de/QM](https://public.tadaa-data.de/QM)</span>
 
 ## Agenda
 
