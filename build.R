@@ -1,15 +1,15 @@
 #! /usr/bin/env Rscript
 
-cat("\n\nRendering presentation...\n\n")
+cat("\nRendering presentation...\n\n")
 rmarkdown::render(input         = "presentation.Rmd",
                   output_format = "revealjs::revealjs_presentation",
-                  output_file   = "presentation.html")
+                  output_file   = "presentation.html", quiet = TRUE)
 
-cat("\n\nRendering single page version...\n\n")
+cat("Rendering single page version...\n\n")
 # html_document themes
 rmarkdown::render(input         = "presentation.Rmd",
                   output_format = "html_document",
-                  output_file   = "index.html")
+                  output_file   = "index.html", quiet = TRUE)
 
 current_user <- Sys.info()[["user"]]
 

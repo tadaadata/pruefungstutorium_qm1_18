@@ -1272,7 +1272,8 @@ Erläutern Sie die Probleme, die im Rahmen einer multiplen Regression auftreten 
 ## Look at this mindfuck
 
 ```{r a15}
-plotly::plot_ly(data = ngo, x = ~deutsch, y = ~englisch, z = ~mathe)
+plotly::plot_ly(data = ngo, x = ~deutsch, y = ~englisch, z = ~mathe, 
+                type = "scatter3d", mode = "markers")
 ```
 
 ## {data-background="img/unimpressed_G5X63GrrLjjVK.gif" data-background-size="30%"}
