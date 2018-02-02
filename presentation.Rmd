@@ -165,7 +165,7 @@ $$
 `r sum(a01$K1^2)` | `r sum(a01$K2^2)` | `r sum(a01$K3^2)`
 </div>
 
-![](assets/plots/ladungen.png)
+![](assets/ladungen.png)
 
 
 ##
@@ -624,11 +624,11 @@ $$C = \sqrt{\frac{\chi^2}{\chi^2 + n}} = \sqrt{\frac{0.544}{0.544 + 246}} \appro
 <div class = "col3">
 <div class = "fragment" data-fragment-index="3">
 $$
-\begin{aligned}
+\begin{align}
 C_{\text{max}} &= \sqrt{\frac{r-1}{r}} \\\\
 &= \sqrt{\frac{2-1}{2}} \\\\
 &\approx \underline{0.707}
-\end{aligned}
+\end{align}
 $$
 </div>
 
@@ -636,11 +636,11 @@ $$
 
 <div class = "fragment" data-fragment-index="4">
 $$
-\begin{aligned}
+\begin{align}
 C_{\text{korr}} &= \frac{C}{C_{\text{max}}} \\\\
 &= \frac{0.047}{0.707} \\\\
 &\approx \underline{0.066}
-\end{aligned}
+\end{align}
 $$
 </div>
 </div>
@@ -683,8 +683,8 @@ Bindungen (horizontal):
 $$
 \begin{align}
 t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
-& + (63 \cdot (46 + 26)) + (46 \cdot 26) \\
-& + (36 \cdot (54 + 24)) + (54 \cdot 24) \\\\
+& + \left(63 \cdot (46 + 26)\right) + (46 \cdot 26) \\
+& + \left(36 \cdot (54 + 24)\right) + (54 \cdot 24) \\\\
 & = \underline{9836}
 \end{align}
 $$
@@ -699,7 +699,7 @@ $$
 \begin{align}
 N_c &= (1  \cdot (46 + 26 + 54 + 24)) \\
 &+ (0  \cdot (26 + 24))  \\
-&+ (63 \cdot (54 + 24))  \\
+&+ \left(63 \cdot (54 + 24)\right)  \\
 &+ (46 \cdot 24)         \\\\
 & = \underline{6168}
 \end{align}
@@ -712,7 +712,7 @@ $$
 \begin{align}
 N_d &= (0 \cdot (63 + 46 + 36 + 54))  \\
 &+ (0  \cdot (63 + 36)) \\
-&+ (26 \cdot (36 + 54)) \\
+&+ \left(26 \cdot (36 + 54)\right) \\
 &+ (46 \cdot 36)        \\\\  
 & =  \underline{3996}
 \end{align}
@@ -764,8 +764,8 @@ $$
 
 $$
 \begin{aligned}
-\tau_b &= \frac{N_c - N_d}{\sqrt{(N_c + N_d + t_x)(N_c + N_d + t_y)}} \\\\
-&= \frac{6168 - 3996}{\sqrt{(10164 + 9836)(10164 + 5475)}} \\\\
+\tau_b &= \frac{N_c - N_d}{\sqrt{(N_c + N_d + t_x)\cdot(N_c + N_d + t_y)}} \\\\
+&= \frac{6168 - 3996}{\sqrt{(10164 + 9836)\cdot(10164 + 5475)}} \\\\
 &\approx \underline{0.123}
 \end{aligned}
 $$
@@ -918,7 +918,7 @@ ggplot(quad, aes(x = x, y = y)) +
 
 ## Eigenschaften der Regressionsgeraden
 
->1. Sie geht immer durch den Punkt $P(\bar{x} | \bar{y})$
+>1. Sie geht immer durch den Punkt $P(\bar{x}\ |\ \bar{y})$
 >2. Die Gerade mit den geringsten Residuenquadraten
 >3. Der Steigungskoeffizient ($b$) gibt die Richtung der Korrelation an
 
@@ -1046,7 +1046,7 @@ $$
 $$
 \begin{aligned}
 S_{x,y} &= \frac{1}{n-1} \sum^n_{i=1} \left(x_i - \bar{x}\right) \cdot \left(y_i - \bar{y}\right) \\
-&= \frac{1}{5-1} \cdot \left(((120-103) \cdot (110-105)) + ((95-103) \cdot (90-105)) + ((100-103) \cdot (110-105)) + ((110-103) \cdot (115-105)) + ((90-103) \cdot (100-105)) \right) \\
+&= \frac{1}{5-1} \cdot \left(\left((120-103) \cdot (110-105)\right) + \left((95-103) \cdot (90-105)\right) + \left((100-103) \cdot (110-105)\right) + \left((110-103) \cdot (115-105)\right) + \left((90-103) \cdot (100-105)\right) \right) \\
 &= \frac{1}{5-1} \cdot \left((17 \cdot 5) + (-8 \cdot -15) + (-3 \cdot 5) + (7 \cdot 10) + (-13 \cdot -5)\right) \\
 &= \frac{1}{5-1} \cdot \left( 85 + 120 + -15 + 70 + 65 \right) \\
 &= \frac{1}{4} \cdot 325 = \frac{325}{4} \\
@@ -1229,7 +1229,7 @@ _(Tipp: denken Sie daran, wie die Variation damals grafisch auf Basis von Quadra
 
 ## Quadradatanten
 
-Im Kontext der Kovarianz sind die Quadranten gemeint, die sich aus $\bar{x}$ und $\bar{y}$ ergeben
+Im Kontext der Kovarianz sind die Quadranten gemeint, die sich aus $\bar{x}$ und $\bar{y}$ mit dem Punkt $P(\bar{x} \ |\ \bar{y})$ ergeben
 
 ```{r a14_quads}
 xval <- seq(-10, 10, .1)
