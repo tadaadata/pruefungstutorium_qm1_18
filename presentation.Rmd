@@ -104,7 +104,7 @@ theme_set(theme_tadaa(base_size = 16))
 
 Im Rahmen einer Hauptkomponentenanalyse wurde die folgende Komponenten-Matrix ermittelt:
 
-![](assets/plots/ladungen.png)
+![](assets/ladungen.png)
 
 ```{r A01_data, echo = F}
 a01 <- data.frame(
@@ -213,19 +213,19 @@ a01 %>%
 
 Auf welche Faktoren laden die durch „A1“ bis „A15“ gekennzeichneten Merkmale jeweils am höchsten?
 
-![](assets/plots/ladungen.png)
+![](assets/ladungen.png)
 
 ##
 
 Auf welche Faktoren laden die durch „A1“ bis „A15“ gekennzeichneten Merkmale jeweils am höchsten?
 
-![](assets/plots/ladungen_max.png)
+![](assets/ladungen_max.png)
 
 ##
 
 Gibt es bei den - im Rahmen der Suche nach einer Einfachstruktur - innerhalb von „6)“ vorgenommenen Zuordnungen an irgendeiner Stelle ein Problem, sodass es sinnvoll erscheinen könnte, eine Rotation durchzuführen?
 
-![](assets/plots/ladungen_pcor.png)
+![](assets/ladungen_pcor.png)
   
 # Aufgabe 2 <br /><br />Faktorenanalyse… Nochmal
 
@@ -1354,6 +1354,9 @@ ggplot(konst, aes(x = Personen, y = Schaden)) +
 
 ## Nochmal zum nachlesen
 
-<span class = "big">[public.tadaa-data.de/QM](https://public.tadaa-data.de/QM)</span>
+<span class = "big">[https://tadaa.click/qm1ws1718](https://tadaa.click/qm1ws1718)</span>
+</div><div class = "fragment">
 
-## {data-background="img/mic-drop.gif" data-background-size="60%"}
+<span class = "big">[https://tadaa.click/qm1ws1718w](https://tadaa.click/qm1ws1718w)</span>
+## {dat
+a-background="img/mic-drop.gif" data-background-size="60%"}
