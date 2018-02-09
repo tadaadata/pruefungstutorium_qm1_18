@@ -68,15 +68,13 @@ theme_set(theme_tadaa(base_size = 16))
 
 ## Für die letzte Reihe
 
-<div class = "fragment">
 ### Slides
 
 <span class = "big">[https://tadaa.click/qm1ws1718](https://tadaa.click/qm1ws1718)</span>
-</div><div class = "fragment">
+
 ### Alles auf einmal
 
 <span class = "big">[https://tadaa.click/qm1ws1718w](https://tadaa.click/qm1ws1718w)</span>
-</div><div class = "fragment">
 
 ## Agenda
 
@@ -84,12 +82,13 @@ theme_set(theme_tadaa(base_size = 16))
 >2. Fragen klären <small>Standard</small>
 >3. Angrenzende Theorie besprechen <small>Bonus</small>
 
-## Erfahrungsgemäß reicht die Zeit …  
+## Erfahrungsgemäß reicht die Zeit...
 
 <div class = "fragment">… **entweder** für alle **Aufgaben**…</div>
 <div class = "fragment">… **oder** für alle **Fragen** </div>
 <br />
 <div class="fragment">Choose wisely.</div>
+
 
 ## {data-background="img/excited_MSS0COPq80x68.gif" data-background-size="60%"}
 
@@ -612,13 +611,13 @@ f_{e_2} &= \frac{138 \cdot 99}{246} \approx 56 \\\\
 
 <small>Die bucklige Verwandschaft</small>
 
-<div class = "fragment" data-fragment-index="1">
+<div class = "fragment">
 $$C = \sqrt{\frac{\chi^2}{\chi^2 + n}} = \sqrt{\frac{0.544}{0.544 + 246}} \approx \underline{0.047}$$
 </div>
 <span class = "fragment" data-fragment-index="2">Und dann noch irgendwas mit $C_{\text{max}}$ und $C_{\text{korr}}$ …?</span>
 
 <div class = "col3">
-<div class = "fragment" data-fragment-index="3">
+<div class = "fragment">
 $$
 \begin{align}
 C_{\text{max}} &= \sqrt{\frac{r-1}{r}} \\\\
@@ -628,7 +627,7 @@ C_{\text{max}} &= \sqrt{\frac{r-1}{r}} \\\\
 $$
 </div>
 
-<div class = "fragment" data-fragment-index="4">
+<div class = "fragment">
 $$
 \begin{align}
 C_{\text{korr}} &= \frac{C}{C_{\text{max}}} \\\\
@@ -1352,5 +1351,5 @@ ggplot(konst, aes(x = Personen, y = Schaden)) +
 </div><div class = "fragment">
 
 <span class = "big">[https://tadaa.click/qm1ws1718w](https://tadaa.click/qm1ws1718w)</span>
-## {dat
-a-background="img/mic-drop.gif" data-background-size="60%"}
+
+## {data-background="img/mic-drop.gif" data-background-size="60%"}
