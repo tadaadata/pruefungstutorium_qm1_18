@@ -614,9 +614,9 @@ f_{e_2} &= \frac{138 \cdot 99}{246} \approx 56 \\\\
 <div class = "fragment">
 $$C = \sqrt{\frac{\chi^2}{\chi^2 + n}} = \sqrt{\frac{0.544}{0.544 + 246}} \approx \underline{0.047}$$
 </div>
-<span class = "fragment" data-fragment-index="2">Und dann noch irgendwas mit $C_{\text{max}}$ und $C_{\text{korr}}$ …?</span>
+<span class = "fragment">Und dann noch irgendwas mit $C_{\text{max}}$ und $C_{\text{korr}}$ ...?</span>
 
-<div class = "col3">
+<div class = "col2">
 <div class = "fragment">
 $$
 \begin{align}
@@ -736,9 +736,9 @@ $$
 $$
 </div>
 
-<span class = "fragment">
+<div class = "fragment">
 \*GASP*\! Damit konnte ja niemand rechnen!
-</span>
+</div>
 
 ## Tau A 
 
@@ -785,7 +785,7 @@ $$
 | C   | 👎        | 👎         | 👍                |
 
 <div class = "fragment">Die Lektion: Einfach nicht benutzen</div>
-<div class = "fragment">…Außer ihr seid euch ganz sicher</div>
+<div class = "fragment">…Außer ...hr seid euch ganz sicher</div>
 
 # Aufgabe 10 <br /><br />Regression
 
@@ -798,7 +798,7 @@ d) Welche Eigenschaften besitzt die Regressionsgerade?
 
 ## Wie geht so 'ne Regression?
 
-Unser Modell: $$y = a + bx$$ bzw $$y = a + bx + e$$
+Unser Modell: $$y = a + bx$$ bzw $$y = a + 'bx + e$$
 
 Regressionsgerade: $$y' = a + bx$$
 
