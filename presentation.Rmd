@@ -778,11 +778,11 @@ $$
 
 ## Long story short: Die Tau's
 
-| Tau | Bindungen | Quadratisch | Nicht-Quadratisch |
-|-----|-----------|-------------|-------------------|
-| A   | 👎        | ¯\\\_(ツ)_/¯| ¯\\\_(ツ)_/¯      |
-| B   | 👍        | 👍         | 👎                |
-| C   | 👎        | 👎         | 👍                |
+| Tau | Bindungen         | Quadratisch       | Nicht-Quadratisch |
+|-----|-------------------|-------------------|-------------------|
+| A   | `r emo::ji("-1")` | ¯\\\_(ツ)_/¯      | ¯\\\_(ツ)_/¯      |
+| B   | `r emo::ji("+1")` | `r emo::ji("+1")` | `r emo::ji("-1")` |
+| C   | `r emo::ji("-1")` | `r emo::ji("-1")` | `r emo::ji("+1")` |
 
 <div class = "fragment">Die Lektion: Einfach nicht benutzen</div>
 <div class = "fragment">...Außer ihr seid euch ganz sicher</div>
