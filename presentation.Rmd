@@ -666,15 +666,17 @@ d) Welche Schlüsse kann man nur aufgrund 1-3) bzgl. der statistischen Beziehung
 e) Berechnen Sie aufgrund 1) und 2) den Wert für Gamma. Besteht ein statistischer Zusammenhang? 
 f) Wäre eine andere Statistik geeigneter?
 
-## 
+## Paare
 
-<div class="col2">
+<div id = "left">
 `r a09_sjt$knitr`
 
-<br /><br />
+<br />
+
+<div class = "fragment" data-fragment-index="3">
 
 Bindungen (horizontal):
-<div class = "fragment" data-fragment-index="3">
+
 $$
 \begin{align}
 t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
@@ -684,9 +686,11 @@ t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
 \end{align}
 $$
 </div>
-
-Konkordante Paare:
+</div>
+<div id = "right">
 <div class = "fragment" data-fragment-index="1">
+Konkordante Paare:
+
 $$
 \begin{align}
 N_c &= (1  \cdot (46 + 26 + 54 + 24)) \\
@@ -698,8 +702,9 @@ N_c &= (1  \cdot (46 + 26 + 54 + 24)) \\
 $$
 </div>
 
-Diskordante Paare: 
 <div class = "fragment" data-fragment-index="2">
+Diskordante Paare: 
+
 $$
 \begin{align}
 N_d &= (0 \cdot (63 + 46 + 36 + 54))  \\
