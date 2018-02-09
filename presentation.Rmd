@@ -8,7 +8,7 @@ output:
     keep_md: true
     css: "assets/styles.css"
     theme: simple
-    highlight: pygments
+    highlight: kate
     incremental: false
     transition: slide
     widescreen: yes
@@ -18,15 +18,11 @@ output:
     fig_retina: 2
     fig_width: 12
     lib_dir: "assets/libs"
-    reveal_plugins: ["notes", "chalkboard"]
     reveal_options:
       slideNumber: true
       progress: true
       history: true
       center: true
-      chalkboard:
-        theme: whiteboard
-        toggleNotesButton: true
   html_document:
     fig_caption: yes
     fig_width: 9
@@ -632,8 +628,6 @@ C_{\text{max}} &= \sqrt{\frac{r-1}{r}} \\\\
 $$
 </div>
 
-<img class = "fragment" data-fragment-index="5" src="img/annoyed_E7iIfUlWHBmh2.gif" />
-
 <div class = "fragment" data-fragment-index="4">
 $$
 \begin{align}
@@ -644,6 +638,8 @@ C_{\text{korr}} &= \frac{C}{C_{\text{max}}} \\\\
 $$
 </div>
 </div>
+
+## {data-background="img/annoyed_E7iIfUlWHBmh2.gif" data-background-size="60%"}
 
 # Aufgabe 9 <br /><br />Ordinalskalierte Statistiken
 
@@ -679,7 +675,7 @@ f) Wäre eine andere Statistik geeigneter?
 <br /><br />
 
 Bindungen (horizontal):
-<div class = "fragment">
+<div class = "fragment" data-fragment-index="3">
 $$
 \begin{align}
 t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
@@ -689,12 +685,9 @@ t &= (1  \cdot (0  + 0))  + (0  \cdot 0) \\
 \end{align}
 $$
 </div>
-</div>
 
-
-<div class="col2">
 Konkordante Paare:
-<div class = "fragment">
+<div class = "fragment" data-fragment-index="1">
 $$
 \begin{align}
 N_c &= (1  \cdot (46 + 26 + 54 + 24)) \\
@@ -707,7 +700,7 @@ $$
 </div>
 
 Diskordante Paare: 
-<div class = "fragment">
+<div class = "fragment" data-fragment-index="2">
 $$
 \begin{align}
 N_d &= (0 \cdot (63 + 46 + 36 + 54))  \\
@@ -758,7 +751,7 @@ $$
 \end{aligned}
 $$
 
-<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</span>
+<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</div>
 
 ## Tau B
 
@@ -770,7 +763,7 @@ $$
 \end{aligned}
 $$
 
-<div class = "fragment">Wenigstens durften wir's anwenden ¯\\\_(ツ)_/¯</span>
+<div class = "fragment">Wenigstens durften wir's anwenden ¯\\\_(ツ)_/¯</div>
 
 ## Tau C
 
@@ -782,7 +775,7 @@ $$
 \end{aligned}
 $$
 
-<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</span>
+<div class = "fragment big">NO WAIT!<br />Was ist das Problem?</div>
 
 ## Long story short: Die Tau's
 
