@@ -785,7 +785,7 @@ $$
 | C   | 👎        | 👎         | 👍                |
 
 <div class = "fragment">Die Lektion: Einfach nicht benutzen</div>
-<div class = "fragment">…Außer ...hr seid euch ganz sicher</div>
+<div class = "fragment">...Außer ihr seid euch ganz sicher</div>
 
 # Aufgabe 10 <br /><br />Regression
 
@@ -798,7 +798,7 @@ d) Welche Eigenschaften besitzt die Regressionsgerade?
 
 ## Wie geht so 'ne Regression?
 
-Unser Modell: $$y = a + bx$$ bzw $$y = a + 'bx + e$$
+Unser Modell: $$y = a + bx$$ bzw $$y' = a + bx + e$$
 
 Regressionsgerade: $$y' = a + bx$$
 
@@ -1348,7 +1348,6 @@ ggplot(konst, aes(x = Personen, y = Schaden)) +
 ## Nochmal zum nachlesen
 
 <span class = "big">[https://tadaa.click/qm1ws1718](https://tadaa.click/qm1ws1718)</span>
-</div><div class = "fragment">
 
 <span class = "big">[https://tadaa.click/qm1ws1718w](https://tadaa.click/qm1ws1718w)</span>
 
