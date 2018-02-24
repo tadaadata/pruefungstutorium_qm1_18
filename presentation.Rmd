@@ -141,7 +141,7 @@ Wie groß ist die Kommunalität des durch „A10“ gekennzeichneten Merkmals?
 htmlTable(as.matrix(a01[c(9:12),]), col.rgroup = cols)
 ```
 
-<p class="fragment">$$0.571^2 +  0.334^2 - 0.323^2 \approx 0.333$$</p>
+<p class="fragment">$$0.571^2 +  0.334^2 + (-0.323)^2 \approx 0.542$$</p>
 
 
 ## 
